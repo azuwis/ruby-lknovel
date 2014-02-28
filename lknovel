@@ -1,0 +1,113 @@
+#!/usr/bin/ruby
+# Encoding: utf-8
+
+require 'erb'
+require 'gepub'
+require 'open-uri'
+require 'pry'
+
+Volume = Struct.new(:url, :series, :author, :title,
+                    :number_s, :number, :date, :illustrator,
+                    :publisher, :intro, :chapters)
+
+def parse_volume(url)
+    page = Nokogiri::HTML(open(url))
+    volume = Volume.new()
+
+    volume.url = url
+
+    page_title = page.title.split(' - ')
+    volume.series = page_title[0]
+    volume.number_s = page_title[1]
+    match = /第([.\d]+)卷/.match(page_title[1])
+    volume.number = match.captures[0].to_f if match
+
+    volume.intro = page.css('strong:contains("内容简介") + p').text
+
+    page.css('table.lk-book-detail td').each_slice(2) do |x|
+        case x[0].text
+            when /标 *题/
+                volume.title = x[1].text.strip()
+            when /作 *者/
+                volume.author = x[1].text.strip()
+            when /插 *画/
+                volume.illustrator = x[1].text.strip()
+            when /文 *库/
+                volume.publisher = x[1].text.strip()
+            when /更 *新/
+                volume.date = x[1].text.strip()
+        end
+    end
+
+    volume.chapters = page.css('ul.lk-chapter-list li.span3').map do |x|
+        chapter_title = x.text.strip().sub(/\s+/, ' ')
+        chapter_url = URI.join(url, x.css('a')[0]['href']).to_s
+        {:title => chapter_title, :url => chapter_url}
+    end
+    PP.pp volume
+    volume
+end
+
+Chapter = Struct.new(:title, :content)
+
+def parse_chapter(url)
+    page = Nokogiri::HTML(open(url))
+
+    title = page.css('li.active')[0].text.sub('章', '章 ').strip()
+
+    content = []
+    page.css('div#J_view').css('div.lk-view-line, br + br').each do |x|
+        img = x.css('img[data-cover]')
+        if x.name == 'br'
+            content.push('')
+        elsif img.length > 0
+            content.push(URI.join(url, img[0]['data-cover']).to_s)
+        else
+            content.push(x.text.chomp())
+        end
+    end
+
+    Chapter.new(title, content)
+end
+
+volume_url = ARGV[0]
+
+volume = parse_volume(volume_url)
+
+volume.chapters.each_with_index do |x, i|
+    html_file = 'html/%03d.html' % i
+    if not File.exists?(html_file)
+        chapter = parse_chapter(x[:url])
+        template = ERB.new(File.read('templates/chapter.html.erb'), nil, '-')
+        html_content = template.result(binding)
+        File.open(html_file, 'w') do |file|
+            file.puts html_content
+        end
+    end
+end
+
+def generate_epub(volume)
+    builder = GEPUB::Builder.new {
+        unique_identifier volume.url
+        language 'zh'
+        date Time.parse(volume.date + ' +0800')
+
+        title volume.series
+        collection volume.title, volume.number
+
+        creator volume.author
+        publisher volume.publisher
+        contributor volume.illustrator, 'ill'
+
+        resources(:workdir => 'html') {
+            ordered {
+                volume.chapters.each_with_index do |x, i|
+                    file 'html/%03d.html' % i
+                    heading x[:title]
+                end
+            }
+        }
+    }
+
+    builder.generate_epub("#{volume.series} - #{volume.number_s} - #{volume.title}.epub")
+end
