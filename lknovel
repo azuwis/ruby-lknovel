@@ -90,7 +90,7 @@ def generate_epub(volume)
     language 'zh'
     date Time.parse(volume.date + ' +0800')
 
-    title volume.series
+    title "#{volume.series} - #{volume.number_s}"
     collection volume.title, volume.number
 
     creator volume.author
