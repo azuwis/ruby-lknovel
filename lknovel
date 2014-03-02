@@ -98,6 +98,7 @@ def generate_epub(volume)
     contributor volume.illustrator, 'ill'
 
     resources(:workdir => volume.path) {
+      cover_image Dir['images/*'].sort_by{|f| File.mtime(f)}.first
       glob 'images/*'
       ordered {
         volume.chapters.each_with_index do |c, i|
