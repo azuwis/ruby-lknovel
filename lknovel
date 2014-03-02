@@ -84,6 +84,33 @@ class Chapter
   end
 end
 
+def generate_epub(volume)
+  builder = GEPUB::Builder.new {
+    unique_identifier volume.url
+    language 'zh'
+    date Time.parse(volume.date + ' +0800')
+
+    title volume.series
+    collection volume.title, volume.number
+
+    creator volume.author
+    publisher volume.publisher
+    contributor volume.illustrator, 'ill'
+
+    resources(:workdir => volume.path) {
+      glob 'images/*'
+      ordered {
+        volume.chapters.each_with_index do |c, i|
+          file 'html/%03d.html' % i
+          heading c[:title]
+        end
+      }
+    }
+  }
+
+  builder.generate_epub("#{volume.path}.epub")
+end
+
 def download_image(url, file)
   File.open(file, 'wb') do |w|
     open(url, 'rb') do |r|
@@ -116,33 +143,6 @@ volume.chapters.each_with_index do |c, i|
       file.puts html_content
     end
   end
-end
-
-def generate_epub(volume)
-  builder = GEPUB::Builder.new {
-    unique_identifier volume.url
-    language 'zh'
-    date Time.parse(volume.date + ' +0800')
-
-    title volume.series
-    collection volume.title, volume.number
-
-    creator volume.author
-    publisher volume.publisher
-    contributor volume.illustrator, 'ill'
-
-    resources(:workdir => volume.path) {
-      glob 'images/*'
-      ordered {
-        volume.chapters.each_with_index do |c, i|
-          file 'html/%03d.html' % i
-          heading c[:title]
-        end
-      }
-    }
-  }
-
-  builder.generate_epub("#{volume.path}.epub")
 end
 
 generate_epub(volume)
