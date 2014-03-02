@@ -84,6 +84,14 @@ class Chapter
   end
 end
 
+def download_image(url, file)
+  File.open(file, 'wb') do |w|
+    open(url, 'rb') do |r|
+      w.write(r.read)
+    end
+  end
+end
+
 url = ARGV[0]
 
 volume = Volume.new(url)
@@ -99,11 +107,7 @@ volume.chapters.each_with_index do |c, i|
       if item.is_a?(URI::HTTP)
         image_file = File.join(volume.path, 'images', Chapter.to_file(item))
         if !File.exists?(image_file)
-          File.open(image_file, 'wb') do |saved_file|
-            open(item, 'rb') do |read_file|
-              saved_file.write(read_file.read)
-            end
-          end
+          download_image(item, image_file)
         end
       end
     end
