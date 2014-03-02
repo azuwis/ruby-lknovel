@@ -12,6 +12,7 @@ class Volume
 
   def initialize(url)
     @url = url
+    parse
   end
 
   def parse
@@ -54,8 +55,14 @@ end
 class Chapter
   attr_reader :url, :title, :content
 
+  def self.to_file(uri)
+    uri.path.split('/').last
+  end
+
   def initialize(url)
     @url = url
+    puts "parsing #{@url}"
+    parse
   end
 
   def parse
@@ -80,16 +87,26 @@ end
 url = ARGV[0]
 
 volume = Volume.new(url)
-volume.parse
 
 FileUtils.mkdir_p(File.join(volume.path, 'html'))
-binding.pry
+FileUtils.mkdir_p(File.join(volume.path, 'images'))
+template = ERB.new(File.read('templates/chapter.html.erb'), nil, '-')
 volume.chapters.each_with_index do |c, i|
   html_file = File.join(volume.path, 'html', '%03d.html' % i)
-  if not File.exists?(html_file)
+  if !File.exists?(html_file)
     chapter = Chapter.new(c[:url])
-    chapter.parse
-    template = ERB.new(File.read('templates/chapter.html.erb'), nil, '-')
+    chapter.content.each do |item|
+      if item.is_a?(URI::HTTP)
+        image_file = File.join(volume.path, 'images', Chapter.to_file(item))
+        if !File.exists?(image_file)
+          File.open(image_file, 'wb') do |saved_file|
+            open(item, 'rb') do |read_file|
+              saved_file.write(read_file.read)
+            end
+          end
+        end
+      end
+    end
     html_content = template.result(binding)
     File.open(html_file, 'w') do |file|
       file.puts html_content
@@ -116,9 +133,12 @@ def generate_epub(volume)
           file 'html/%03d.html' % i
           heading c[:title]
         end
+        glob 'images/*'
       }
     }
   }
 
-  builder.generate_epub("#{Volume.path}.epub")
+  builder.generate_epub("#{volume.path}.epub")
 end
+
+generate_epub(volume)

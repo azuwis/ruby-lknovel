@@ -7,8 +7,12 @@
   <body>
     <h1><%= volume.title %></h1>
     <h2><%= chapter.title %></h2>
-<% chapter.content.each do |line| -%>
-      <p><%= line %></p>
+<% chapter.content.each do |item| -%>
+<% if item.is_a?(URI::HTTP) -%>
+      <img src="../images/<%= Chapter.to_file(item) %>">
+<% else -%>
+      <p><%= item %></p>
+<% end -%>
 <% end -%>
   </body>
 </html>
