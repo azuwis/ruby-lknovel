@@ -132,12 +132,12 @@ def generate_epub(volume)
     contributor volume.illustrator, 'ill'
 
     resources(:workdir => volume.path) {
+      glob 'images/*'
       ordered {
         volume.chapters.each_with_index do |c, i|
           file 'html/%03d.html' % i
           heading c[:title]
         end
-        glob 'images/*'
       }
     }
   }
