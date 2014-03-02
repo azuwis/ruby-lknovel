@@ -84,6 +84,30 @@ class Chapter
   end
 end
 
+def process_volume(volume)
+  FileUtils.mkdir_p(File.join(volume.path, 'html'))
+  FileUtils.mkdir_p(File.join(volume.path, 'images'))
+  template = ERB.new(File.read('templates/chapter.html.erb'), nil, '-')
+  volume.chapters.each_with_index do |c, i|
+    html_file = File.join(volume.path, 'html', '%03d.html' % i)
+    if !File.exists?(html_file)
+      chapter = Chapter.new(c[:url])
+      chapter.content.each do |item|
+        if item.is_a?(URI::HTTP)
+          image_file = File.join(volume.path, 'images', Chapter.to_file(item))
+          if !File.exists?(image_file)
+            download_image(item, image_file)
+          end
+        end
+      end
+      html_content = template.result(binding)
+      File.open(html_file, 'w') do |file|
+        file.puts html_content
+      end
+    end
+  end
+end
+
 def generate_epub(volume)
   builder = GEPUB::Builder.new {
     unique_identifier volume.url
@@ -120,30 +144,13 @@ def download_image(url, file)
   end
 end
 
-url = ARGV[0]
-
-volume = Volume.new(url)
-
-FileUtils.mkdir_p(File.join(volume.path, 'html'))
-FileUtils.mkdir_p(File.join(volume.path, 'images'))
-template = ERB.new(File.read('templates/chapter.html.erb'), nil, '-')
-volume.chapters.each_with_index do |c, i|
-  html_file = File.join(volume.path, 'html', '%03d.html' % i)
-  if !File.exists?(html_file)
-    chapter = Chapter.new(c[:url])
-    chapter.content.each do |item|
-      if item.is_a?(URI::HTTP)
-        image_file = File.join(volume.path, 'images', Chapter.to_file(item))
-        if !File.exists?(image_file)
-          download_image(item, image_file)
-        end
-      end
-    end
-    html_content = template.result(binding)
-    File.open(html_file, 'w') do |file|
-      file.puts html_content
-    end
-  end
+def main()
+  url = ARGV[0]
+  volume = Volume.new(url)
+  process_volume(volume)
+  generate_epub(volume)
 end
 
-generate_epub(volume)
+if $0 == __FILE__
+  main
+end
