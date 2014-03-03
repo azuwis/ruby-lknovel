@@ -154,7 +154,7 @@ def generate_epub(volume)
     contributor volume.illustrator, 'ill'
 
     resources(:workdir => volume.path) {
-      cover_image Dir['images/*'].sort_by{|f| File.mtime(f)}.first
+      cover_image get_cover_image
       glob 'images/*'
       ordered {
         volume.chapters.each_with_index do |chapter_info, index|
@@ -166,6 +166,13 @@ def generate_epub(volume)
   }
 
   builder.generate_epub("#{volume.path}.epub")
+end
+
+def get_cover_image
+  image = Dir['images/*'].sort_by{|f| File.mtime(f)}.first
+  `test $(identify -format "%[fx:w] -gt %[fx:h]" #{image}) && \
+  convert #{image} -crop 52%x100%+0+0 images/cover.jpg`
+  $?.exitstatus.zero? ? 'images/cover.jpg' : image
 end
 
 def main()
