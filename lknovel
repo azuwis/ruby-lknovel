@@ -77,7 +77,6 @@ class Chapter
 
   def initialize(url)
     @url = url
-    puts "parsing #{@url}"
     parse
   end
 
@@ -103,24 +102,39 @@ class Chapter
 end
 
 def process_volume(volume)
-  FileUtils.mkdir_p(File.join(volume.path, 'html'))
-  FileUtils.mkdir_p(File.join(volume.path, 'images'))
   template = ERB.new(File.read('templates/chapter.html.erb'), nil, '-')
-  volume.chapters.each_with_index do |c, i|
-    html_file = File.join(volume.path, 'html', '%03d.html' % i)
-    if !File.exists?(html_file)
-      chapter = Chapter.new(c[:url])
-      chapter.content.each do |item|
-        if item.is_a?(URI::HTTP)
-          image_file = File.join(volume.path, 'images', Chapter.to_file(item))
-          if !File.exists?(image_file)
-            download_image(item, image_file)
-          end
-        end
+  volume.chapters.each_with_index do |chapter_info, index|
+    generate_html(volume.path, chapter_info, index, template)
+  end
+end
+
+def generate_html(work_dir, chapter_info, index, template)
+  FileUtils.mkdir_p(File.join(work_dir, 'html'))
+  FileUtils.mkdir_p(File.join(work_dir, 'images'))
+  html_file = File.join(work_dir, 'html', '%03d.html' % index)
+  if !File.exists?(html_file)
+    puts "processing #{chapter_info[:title]}"
+    chapter = Chapter.new(chapter_info[:url])
+    chapter.content.each do |item|
+      if item.is_a?(URI::HTTP)
+        image_file = File.join(work_dir, 'images', Chapter.to_file(item))
+        download_image(item, image_file)
       end
-      html_content = template.result(binding)
-      File.open(html_file, 'w') do |file|
-        file.puts html_content
+    end
+    html_content = template.result(binding)
+    File.open(html_file, 'w') do |file|
+      file.puts html_content
+    end
+  end
+end
+
+def download_image(url, file)
+  if !File.exists?(file)
+    File.open(file, 'wb') do |w|
+      retryable do
+        open(url, 'rb') do |r|
+          w.write(r.read)
+        end
       end
     end
   end
@@ -143,25 +157,15 @@ def generate_epub(volume)
       cover_image Dir['images/*'].sort_by{|f| File.mtime(f)}.first
       glob 'images/*'
       ordered {
-        volume.chapters.each_with_index do |c, i|
-          file 'html/%03d.html' % i
-          heading c[:title]
+        volume.chapters.each_with_index do |chapter_info, index|
+          file 'html/%03d.html' % index
+          heading chapter_info[:title]
         end
       }
     }
   }
 
   builder.generate_epub("#{volume.path}.epub")
-end
-
-def download_image(url, file)
-  File.open(file, 'wb') do |w|
-    retryable do
-      open(url, 'rb') do |r|
-        w.write(r.read)
-      end
-    end
-  end
 end
 
 def main()
