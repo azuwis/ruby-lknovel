@@ -6,6 +6,20 @@ require 'gepub'
 require 'open-uri'
 require 'pry'
 
+def retryable(options = {}, &block)
+  opts = { :tries => 3, :on => Exception }.merge(options)
+
+  retry_exception, retries = opts[:on], opts[:tries]
+
+  begin
+    return yield
+  rescue retry_exception
+    retry if (retries -= 1) > 0
+  end
+
+  yield
+end
+
 class Volume
   attr_reader :url, :series, :author, :title, :number_s, :number, :date,
     :illustrator, :publisher, :intro, :chapters, :path
@@ -16,7 +30,9 @@ class Volume
   end
 
   def parse
-    page = Nokogiri::HTML(open(@url))
+    page = retryable do
+      Nokogiri::HTML(open(@url))
+    end
 
     page_title = page.title.split(' - ')
     @series = page_title[0]
@@ -66,7 +82,9 @@ class Chapter
   end
 
   def parse
-    page = Nokogiri::HTML(open(@url))
+    page = retryable do
+      Nokogiri::HTML(open(@url))
+    end
 
     @title = page.css('li.active')[0].text.sub('章', '章 ').strip
 
@@ -138,8 +156,10 @@ end
 
 def download_image(url, file)
   File.open(file, 'wb') do |w|
-    open(url, 'rb') do |r|
-      w.write(r.read)
+    retryable do
+      open(url, 'rb') do |r|
+        w.write(r.read)
+      end
     end
   end
 end
