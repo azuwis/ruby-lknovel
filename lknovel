@@ -102,6 +102,7 @@ class Chapter
 end
 
 def process_volume(volume)
+  puts "Start: #{volume.path}"
   template = ERB.new(File.read('templates/chapter.html.erb'), nil, '-')
   volume.chapters.each_with_index do |chapter_info, index|
     generate_html(volume.path, chapter_info, index, template)
@@ -113,7 +114,7 @@ def generate_html(work_dir, chapter_info, index, template)
   FileUtils.mkdir_p(File.join(work_dir, 'images'))
   html_file = File.join(work_dir, 'html', '%03d.html' % index)
   if !File.exists?(html_file)
-    puts "processing #{chapter_info[:title]}"
+    puts "  #{chapter_info[:title]}"
     chapter = Chapter.new(chapter_info[:url])
     chapter.content.each do |item|
       if item.is_a?(URI::HTTP)
@@ -129,6 +130,7 @@ def generate_html(work_dir, chapter_info, index, template)
 end
 
 def download_image(url, file)
+  puts "    #{url}"
   if !File.exists?(file)
     File.open(file, 'wb') do |w|
       retryable do
@@ -166,6 +168,7 @@ def generate_epub(volume)
   }
 
   builder.generate_epub("#{volume.path}.epub")
+  puts "Finish: #{volume.path}.epub"
 end
 
 def get_cover_image
