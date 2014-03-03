@@ -5,8 +5,7 @@
     <title><%= chapter.title %></title>
   </head>
   <body>
-    <h1><%= volume.title %></h1>
-    <h2><%= chapter.title %></h2>
+    <h1><%= chapter.title %></h1>
 <% chapter.content.each do |item| -%>
 <% if item.is_a?(URI::HTTP) -%>
       <img src="../images/<%= Chapter.to_file(item) %>">
