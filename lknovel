@@ -109,6 +109,8 @@ def process_volume(volume)
   volume.chapters.each_with_index do |chapter_info, index|
     generate_html(volume.path, chapter_info, index, template)
   end
+
+  get_cover_image(volume)
 end
 
 def generate_html(work_dir, chapter_info, index, template)
@@ -156,7 +158,7 @@ def generate_epub(volume)
     contributor volume.illustrator, 'ill'
 
     resources(:workdir => volume.path) {
-      cover_image get_cover_image
+      cover_image 'images/cover.jpg'
       glob 'images/*'
       ordered {
         volume.chapters.each_with_index do |chapter_info, index|
@@ -171,11 +173,15 @@ def generate_epub(volume)
   puts "Finish: #{volume.path}.epub"
 end
 
-def get_cover_image
-  image = Dir['images/*'].sort_by{|f| File.mtime(f)}.first
-  `test $(identify -format "%[fx:w] -gt %[fx:h]" #{image}) && \
-  convert #{image} -crop 52%x100%+0+0 images/cover.jpg`
-  $?.exitstatus.zero? ? 'images/cover.jpg' : image
+def get_cover_image(volume)
+  Dir.chdir(File.join(volume.path, 'images')) do
+    image = Dir['*'].sort_by{|f| File.mtime(f)}.first
+    `test $(identify -format "%[fx:w] -gt %[fx:h]" #{image}) && \
+      convert #{image} -crop 52%x100%+0+0 cover.jpg`
+    if !$?.exitstatus.zero?
+      FileUtils.copy image, 'cover.jpg'
+    end
+  end
 end
 
 def main()
