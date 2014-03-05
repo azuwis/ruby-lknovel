@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head></head>
+  <body>
+    <nav epub:type="toc" id="toc">
+      <img src="../images/cover.jpg">
+      <ul>
+<% volume.chapters.each_with_index do |chapter_info, index| -%>
+        <li><a href="<%= '%03d' % index %>.html"><%= chapter_info[:title] %></a></li>
+<% end -%>
+      </ul>
+    </nav>
+  </body>
+</html>

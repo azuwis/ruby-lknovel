@@ -111,6 +111,19 @@ def process_volume(volume)
   end
 
   get_cover_image(volume)
+  generate_nav(volume)
+end
+
+def generate_nav(volume)
+  html_file = File.join(volume.path, 'html', 'nav.html')
+  if !File.exists?(html_file)
+    template = ERB.new(File.read('templates/nav.html.erb'), nil, '-')
+    html_content = template.result(binding)
+
+    File.open(html_file, 'w') do |file|
+      file.puts html_content
+    end
+  end
 end
 
 def generate_html(work_dir, chapter_info, index, template)
@@ -161,6 +174,7 @@ def generate_epub(volume)
       cover_image 'images/cover.jpg'
       glob 'images/*'
       ordered {
+        nav 'html/nav.html'
         volume.chapters.each_with_index do |chapter_info, index|
           file 'html/%03d.html' % index
           heading chapter_info[:title]
