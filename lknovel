@@ -103,6 +103,9 @@ end
 
 def process_volume(volume)
   puts "Start: #{volume.path}"
+  FileUtils.mkdir_p(File.join(volume.path, 'html'))
+  FileUtils.mkdir_p(File.join(volume.path, 'images'))
+
   template = ERB.new(File.read('templates/chapter.html.erb'), nil, '-')
   volume.chapters.each_with_index do |chapter_info, index|
     generate_html(volume.path, chapter_info, index, template)
@@ -110,8 +113,6 @@ def process_volume(volume)
 end
 
 def generate_html(work_dir, chapter_info, index, template)
-  FileUtils.mkdir_p(File.join(work_dir, 'html'))
-  FileUtils.mkdir_p(File.join(work_dir, 'images'))
   html_file = File.join(work_dir, 'html', '%03d.html' % index)
   if !File.exists?(html_file)
     puts "  #{chapter_info[:title]}"
