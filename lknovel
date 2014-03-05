@@ -4,7 +4,6 @@
 require 'erb'
 require 'gepub'
 require 'open-uri'
-require 'pry'
 
 def retryable(options = {}, &block)
   opts = { :tries => 3, :on => Exception }.merge(options)
