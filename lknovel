@@ -110,7 +110,7 @@ def process_volume(volume)
     generate_html(volume.path, chapter_info, index, template)
   end
 
-  get_cover_image(volume)
+  generate_cover_image(volume)
   generate_nav(volume)
 end
 
@@ -191,7 +191,7 @@ def generate_epub(volume)
   puts "Finish: #{volume.path}.epub"
 end
 
-def get_cover_image(volume)
+def generate_cover_image(volume)
   Dir.chdir(File.join(volume.path, 'images')) do
     image = Dir['*'].sort_by{|f| File.mtime(f)}.first
     `test $(identify -format "%[fx:w] -gt %[fx:h]" #{image}) && \
