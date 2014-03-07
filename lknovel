@@ -175,6 +175,7 @@ def generate_epub(volume)
 
     resources(:workdir => volume.path) {
       cover_image 'images/cover.jpg'
+      file 'stylesheets/default.css' => '../stylesheets/default.css'
       glob 'images/*'
       ordered {
         nav 'html/nav.html'
