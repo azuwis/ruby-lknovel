@@ -1,4 +1,4 @@
-require "lknovel/version"
+require "lknovel/meta"
 
 module Lknovel
   # Your code goes here...
