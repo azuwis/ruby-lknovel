@@ -22,6 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "minitest"
 
   spec.add_runtime_dependency 'nokogiri'
+  spec.add_runtime_dependency 'parallel'
 
   spec.add_development_dependency 'pry-rescue'
 end

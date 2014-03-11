@@ -4,6 +4,7 @@ require 'lknovel/meta'
 require 'lknovel/utils'
 require 'nokogiri'
 require 'open-uri'
+require 'parallel'
 
 module Lknovel
   class Volume
@@ -11,8 +12,9 @@ module Lknovel
     attr_reader :url, :series, :author, :title, :number_s, :number, :date,
       :illustrator, :publisher, :intro, :chapters, :path, :cover_image
 
-    def initialize(url)
+    def initialize(url, threads = 4)
       @url = url
+      @threads = threads
       parse
     end
 
@@ -47,7 +49,9 @@ module Lknovel
 
       @path = "#{@series} - #{@number_s} - #{@title}"
 
-      @chapters = page.css('ul.lk-chapter-list li.span3').map do |x|
+      @chapters = Parallel.map(
+        page.css('ul.lk-chapter-list li.span3'),
+        :in_threads => @threads) do |x|
         chapter_title = x.text.strip.sub(/\s+/, ' ')
         chapter_url = URI.join(url, x.css('a')[0]['href']).to_s
         Chapter.new(chapter_url)
