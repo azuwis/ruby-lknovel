@@ -1,10 +1,14 @@
 # Lknovel
 
-TODO: Write a gem description
+Generate epub from http://lknovel.lightnovel.cn/
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Install using gem:
+
+    $ gem install lknovel
+
+Or add this line to your application's Gemfile:
 
     gem 'lknovel'
 
@@ -12,17 +16,13 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install lknovel
-
 ## Usage
 
-TODO: Write usage instructions here
+    $ lknovel http://lknovel.lightnovel.cn/main/book/2136.html
 
 ## Contributing
 
-1. Fork it ( http://github.com/<my-github-username>/lknovel/fork )
+1. Fork it ( http://github.com/azuwis/lknovel/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
