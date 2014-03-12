@@ -4,4 +4,5 @@ module Lknovel
   TEMPLATE_PATH = File.join(MODULE_PATH, 'templates')
   IMAGE_DIR = 'images'
   STYLESHEET_DIR = 'stylesheets'
+  HTML_FILE_FORMAT = '%03d.html'
 end

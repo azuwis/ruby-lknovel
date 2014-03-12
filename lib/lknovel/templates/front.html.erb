@@ -10,7 +10,7 @@
     <nav epub:type="toc" id="toc">
       <ul class="nav">
 <% @chapters.each_with_index do |chapter, index| -%>
-        <li><a href="<%= '%03d' % index %>.html"><%= chapter.title %></a></li>
+        <li><a href="<%= HTML_FILE_FORMAT % index %>"><%= chapter.title %></a></li>
 <% end -%>
       </ul>
     </nav>
