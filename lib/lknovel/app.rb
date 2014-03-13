@@ -85,8 +85,17 @@ module Lknovel
               images.push content if content.is_a?(Image)
             end
           end
+
+          progress = 1
           Parallel.each(images, :in_threads => 5) do |image|
+            if @options.verbose
+              STDERR.write "\rDownload images: #{progress}/#{images.length}\t#{image.file}"
+            end
+            progress = progress + 1
             image.download
+          end
+          if @options.verbose
+            puts
           end
 
           # try to crop image if width > height
