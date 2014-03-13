@@ -20,8 +20,8 @@ describe Lknovel::Chapter do
 
   it 'generate html' do
     html = chapter.html(File.join(Lknovel::TEMPLATE_PATH, 'chapter.html.erb'))
-    html.must_match '"/stylesheets/default.css"'
-    html.must_match '"/images/20120808202639_66681.jpg"'
+    html.must_match '"../stylesheets/default.css"'
+    html.must_match '"../images/20120808202639_66681.jpg"'
   end
 
 end
