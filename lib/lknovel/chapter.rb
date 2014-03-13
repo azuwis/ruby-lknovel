@@ -33,6 +33,7 @@ module Lknovel
           lk_image = Image.new(URI.join(url, img[0]['data-cover']))
           @content.push(lk_image)
         else
+          # strip and remove leading wide space
           @content.push(x.text.strip.sub(/^　+/, ''))
         end
       end
