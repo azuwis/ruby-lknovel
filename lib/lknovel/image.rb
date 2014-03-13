@@ -4,7 +4,7 @@ require 'uri'
 module Lknovel
   class Image
 
-    attr_reader :file
+    attr_reader :uri, :file
 
     def initialize(url)
       @uri = URI(url)
