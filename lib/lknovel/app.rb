@@ -20,8 +20,8 @@ module Lknovel
         opts.banner = 'Usage: lknovel [options] url'
         opts.separator "\nSpecific options:"
 
-        opts.on('-k', '--[no-]keep', 'Keep temporary files') do |v|
-          options.verbose = v
+        opts.on('-k', '--[no-]keep', 'Keep temporary files') do |k|
+          options.keep = k
         end
 
         opts.on('-v', '--[no-]verbose', 'Run verbosely') do |v|
