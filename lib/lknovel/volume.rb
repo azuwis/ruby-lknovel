@@ -12,9 +12,9 @@ module Lknovel
     attr_reader :url, :series, :author, :title, :number_s, :number, :date,
       :illustrator, :publisher, :intro, :chapters, :path, :cover_image
 
-    def initialize(url, threads = 4)
+    def initialize(url, options = {:threads => 4})
       @url = url
-      @threads = threads
+      @threads = options[:threads]
       parse
     end
 
