@@ -5,7 +5,7 @@
     <link href="<%= "../#{STYLESHEET_DIR}/default.css" %>" rel="stylesheet" type="text/css"/>
   </head>
   <body>
-    <img class="page-break" src="<%= "../#{IMAGE_DIR}/cover.jpg" %>">
+    <img class="page-break" src="<%= "../#{IMAGE_DIR}/#{@cover_image_cropped}" %>">
     <h1>简介</h1>
     <p><%= @intro %></p>
     <nav epub:type="toc" id="toc">

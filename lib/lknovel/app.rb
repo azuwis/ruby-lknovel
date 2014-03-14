@@ -67,16 +67,6 @@ module Lknovel
       puts "Start: #{volume.path}"
       FileUtils.mkdir_p(volume.path)
       Dir.chdir(volume.path) do
-        FileUtils.mkdir_p(HTML_DIR)
-        Dir.chdir(HTML_DIR) do
-          volume.html(File.join(TEMPLATE_PATH, 'front.html.erb'), 'front.html')
-          erb = File.read(File.join(TEMPLATE_PATH, 'chapter.html.erb'))
-          template = ERB.new(erb, nil, '-')
-          volume.chapters.each_with_index do |chapter, index|
-            chapter.html(template, HTML_FILE_FORMAT % index)
-          end
-        end
-
         FileUtils.mkdir_p(IMAGE_DIR)
         Dir.chdir(IMAGE_DIR) do
           images = []
@@ -100,12 +90,19 @@ module Lknovel
             puts
           end
 
-          # try to crop image if width > height
-          image = volume.cover_image.file
-          `test $(identify -format "%[fx:w] -gt %[fx:h]" #{image}) && \
-            convert #{image} -crop 52%x100%+0+0 cover.jpg`
-          if !$?.exitstatus.zero?
-            FileUtils.copy image, 'cover.jpg'
+          # crop cover image if width > height * 1.5
+          cropped = volume.cover_image.crop('cover.jpg',
+                      '52%x100%+0+0') { |w, h| w > h * 1.5 }
+          volume.cover_image_cropped = 'cover.jpg' if cropped
+        end
+
+        FileUtils.mkdir_p(HTML_DIR)
+        Dir.chdir(HTML_DIR) do
+          volume.html(File.join(TEMPLATE_PATH, 'front.html.erb'), 'front.html')
+          erb = File.read(File.join(TEMPLATE_PATH, 'chapter.html.erb'))
+          template = ERB.new(erb, nil, '-')
+          volume.chapters.each_with_index do |chapter, index|
+            chapter.html(template, HTML_FILE_FORMAT % index)
           end
         end
       end
@@ -123,7 +120,7 @@ module Lknovel
         contributor volume.illustrator, 'ill'
 
         resources(:workdir => volume.path) {
-          cover_image File.join(IMAGE_DIR, 'cover.jpg')
+          cover_image File.join(IMAGE_DIR, volume.cover_image_cropped)
           file \
             "#{STYLESHEET_DIR}/default.css" => "#{STYLESHEET_PATH}/default.css"
           glob "#{IMAGE_DIR}/*"

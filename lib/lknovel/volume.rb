@@ -12,6 +12,8 @@ module Lknovel
     attr_reader :url, :series, :author, :title, :number_s, :number, :date,
       :illustrator, :publisher, :intro, :chapters, :path, :cover_image
 
+    attr_accessor :cover_image_cropped
+
     def initialize(url, options = {:threads => 4})
       @url = url
       @threads = options[:threads]
@@ -58,6 +60,7 @@ module Lknovel
       end
 
       @cover_image = @chapters[0].content.find { |x| x.is_a?(Lknovel::Image) }
+      @cover_image_cropped = @cover_image.file
     end
 
     def html(erb, path = nil)
