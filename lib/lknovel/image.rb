@@ -1,4 +1,5 @@
 require 'lknovel/utils'
+require 'open-uri'
 require 'uri'
 
 module Lknovel
