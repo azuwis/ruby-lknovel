@@ -91,7 +91,8 @@ module Lknovel
           Parallel.each(images, :in_threads => 5) do |image|
             image.download
             if @options.verbose
-              STDERR.write "\rDownload images: #{progress}/#{images.length}\t#{image.file}"
+              STDERR.write \
+                "\rDownload images: #{progress}/#{images.length}\t#{image.file}"
             end
             progress = progress + 1
           end
@@ -123,7 +124,8 @@ module Lknovel
 
         resources(:workdir => volume.path) {
           cover_image File.join(IMAGE_DIR, 'cover.jpg')
-          file "#{STYLESHEET_DIR}/default.css" => "#{STYLESHEET_PATH}/default.css"
+          file \
+            "#{STYLESHEET_DIR}/default.css" => "#{STYLESHEET_PATH}/default.css"
           glob "#{IMAGE_DIR}/*"
           ordered {
             nav "#{HTML_DIR}/front.html"
