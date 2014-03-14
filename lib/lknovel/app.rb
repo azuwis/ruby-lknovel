@@ -87,12 +87,13 @@ module Lknovel
           end
 
           progress = 1
+          STDERR.write "\rDownload images: 0/#{images.length}"
           Parallel.each(images, :in_threads => 5) do |image|
+            image.download
             if @options.verbose
               STDERR.write "\rDownload images: #{progress}/#{images.length}\t#{image.file}"
             end
             progress = progress + 1
-            image.download
           end
           if @options.verbose
             puts
