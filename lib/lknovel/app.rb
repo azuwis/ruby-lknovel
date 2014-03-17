@@ -51,6 +51,11 @@ module Lknovel
 
     def initialize(args)
       @options = self.class.parse(args)
+      begin
+        @console_width = `tput cols`.to_i
+      rescue Exception
+        @console_width = 80
+      end
     end
 
     def run
@@ -74,15 +79,18 @@ module Lknovel
             end
           end
 
-          progress = 1
-          STDERR.write "\rDownload images: 0/#{images.length}"
+          if @options.verbose
+            progress = 1
+          end
+          STDERR.write "\rDownload images: 0/#{images.length}\t..."
           Parallel.each(images, :in_threads => 5) do |image|
             image.download
             if @options.verbose
+              STDERR.write "\r#{' ' * @console_width}"
               STDERR.write \
                 "\rDownload images: #{progress}/#{images.length}\t#{image.file}"
+              progress = progress + 1
             end
-            progress = progress + 1
           end
           if @options.verbose
             puts
