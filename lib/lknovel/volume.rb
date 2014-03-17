@@ -14,13 +14,13 @@ module Lknovel
 
     attr_accessor :cover_image_cropped
 
-    def initialize(url, options = {:threads => 4})
+    def initialize(url, options = {}, &block)
       @url = url
-      @threads = options[:threads]
-      parse
+      @options = {:threads => 4}.merge(options)
+      parse(&block)
     end
 
-    def parse
+    def parse(&block)
       page = retryable do
         Nokogiri::HTML(open(@url))
       end
@@ -56,7 +56,9 @@ module Lknovel
         :in_threads => @threads) do |x|
         chapter_title = x.text.strip.sub(/\s+/, ' ')
         chapter_url = URI.join(url, x.css('a')[0]['href']).to_s
-        Chapter.new(chapter_url)
+        chapter = Chapter.new(chapter_url)
+        block.call(chapter)
+        chapter
       end
 
       @cover_image = @chapters[0].content.find { |x| x.is_a?(Lknovel::Image) }
