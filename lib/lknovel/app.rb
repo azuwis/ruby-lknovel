@@ -9,8 +9,6 @@ require 'pry'
 module Lknovel
   class App
 
-    attr_reader :options
-
     def self.parse(args)
       options = OpenStruct.new
       options.verbose = true
