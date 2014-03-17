@@ -65,9 +65,19 @@ module Lknovel
     end
 
     def process_volume(url)
-      volume = Volume.new(url)
+      if @options.verbose
+        STDERR.write "Parsing chapters: ..."
+      end
+      volume = Volume.new(url) do |chapter|
+        if @options.verbose
+          STDERR.write "\r#{' ' * @console_width}"
+          STDERR.write "\rParsing chapters: #{chapter.title}"
+        end
+      end
+      if @options.verbose
+        puts
+      end
 
-      puts "Start: #{volume.path}"
       FileUtils.mkdir_p(volume.path)
       Dir.chdir(volume.path) do
         FileUtils.mkdir_p(IMAGE_DIR)
