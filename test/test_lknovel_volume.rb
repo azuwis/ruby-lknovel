@@ -39,7 +39,7 @@ describe Lknovel::Volume do
   end
 
   it 'generate front html' do
-    html = volume.html(File.join(Lknovel::TEMPLATE_PATH, 'front.html.erb'))
+    html = volume.render(File.join(Lknovel::TEMPLATE_PATH, 'front.html.erb'))
     html.must_match '<li><a href="000.html">第0章 序章</a></li>'
   end
 

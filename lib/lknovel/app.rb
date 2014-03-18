@@ -99,11 +99,11 @@ module Lknovel
 
         FileUtils.mkdir_p(HTML_DIR)
         Dir.chdir(HTML_DIR) do
-          volume.html(File.join(TEMPLATE_PATH, 'front.html.erb'), 'front.html')
+          volume.render(File.join(TEMPLATE_PATH, 'front.html.erb'), 'front.html')
           erb = File.read(File.join(TEMPLATE_PATH, 'chapter.html.erb'))
           template = ERB.new(erb, nil, '-')
           volume.chapters.each_with_index do |chapter, index|
-            chapter.html(template, HTML_FILE_FORMAT % index)
+            chapter.render(template, HTML_FILE_FORMAT % index)
           end
         end
       end

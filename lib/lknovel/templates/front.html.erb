@@ -2,16 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
   <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-    <link href="<%= "../#{STYLESHEET_DIR}/default.css" %>" rel="stylesheet" type="text/css"/>
+    <link href="<%= "../#{Lknovel::STYLESHEET_DIR}/default.css" %>" rel="stylesheet" type="text/css"/>
   </head>
   <body>
-    <img class="page-break" src="<%= "../#{IMAGE_DIR}/#{@cover_image}" %>">
+    <img class="page-break" src="<%= "../#{Lknovel::IMAGE_DIR}/#{@cover_image}" %>">
     <h1>简介</h1>
     <p><%= @intro %></p>
     <nav epub:type="toc" id="toc">
       <ul class="nav">
 <% @chapters.each_with_index do |chapter, index| -%>
-        <li><a href="<%= HTML_FILE_FORMAT % index %>"><%= chapter.title %></a></li>
+        <li><a href="<%= Lknovel::HTML_FILE_FORMAT % index %>"><%= chapter.title %></a></li>
 <% end -%>
       </ul>
     </nav>

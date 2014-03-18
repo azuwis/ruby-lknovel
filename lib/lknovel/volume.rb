@@ -7,6 +7,7 @@ require 'open-uri'
 
 module Lknovel
   class Volume
+    include ERBRender
 
     attr_reader :url, :series, :author, :title, :number_s, :number, :date,
       :illustrator, :publisher, :intro, :chapters, :path
@@ -53,20 +54,6 @@ module Lknovel
         chapter_title = x.text.strip.sub(/\s+/, ' ')
         chapter_url = URI.join(url, x.css('a')[0]['href']).to_s
         Chapter.new(chapter_url, title: chapter_title)
-      end
-    end
-
-    def html(erb, path = nil)
-      template = erb.is_a?(ERB) ? erb : ERB.new(File.read(erb), nil, '-')
-      html_content = template.result(binding)
-      if path.nil?
-        html_content
-      else
-        if !File.exists?(path)
-          File.open(path, 'w') do |file|
-            file.puts html_content
-          end
-        end
       end
     end
 

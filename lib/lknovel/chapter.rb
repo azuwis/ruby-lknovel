@@ -9,6 +9,7 @@ require 'open-uri'
 
 module Lknovel
   class Chapter
+    include ERBRender
 
     attr_reader :url, :title, :content
 
@@ -36,20 +37,6 @@ module Lknovel
         else
           # strip and remove leading wide space
           @content << x.text.strip.sub(/^　+/, '')
-        end
-      end
-    end
-
-    def html(erb, path = nil)
-      template = erb.is_a?(ERB) ? erb : ERB.new(File.read(erb), nil, '-')
-      html_content = template.result(binding)
-      if path.nil?
-        html_content
-      else
-        if !File.exists?(path)
-          File.open(path, 'w') do |file|
-            file.puts html_content
-          end
         end
       end
     end

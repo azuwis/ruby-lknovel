@@ -49,3 +49,19 @@ def parallel_verbose(items, options = {}, &block)
     puts
   end
 end
+
+module ERBRender
+    def render(erb, path = nil)
+      template = erb.is_a?(ERB) ? erb : ERB.new(File.read(erb), nil, '-')
+      html_content = template.result(binding)
+      if path.nil?
+        html_content
+      else
+        if !File.exists?(path)
+          File.open(path, 'w') do |file|
+            file.puts html_content
+          end
+        end
+      end
+    end
+end
