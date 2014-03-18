@@ -22,8 +22,8 @@ module Lknovel
           options.keep = k
         end
 
-        opts.on('-v', '--[no-]verbose', 'Run verbosely') do |v|
-          options.verbose = v
+        opts.on('-q', '--[no-]quiet', 'Run quietly') do |q|
+          options.verbose = !q
         end
 
         opts.separator "\nCommon options:"
