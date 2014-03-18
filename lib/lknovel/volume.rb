@@ -4,23 +4,21 @@ require 'lknovel/meta'
 require 'lknovel/utils'
 require 'nokogiri'
 require 'open-uri'
-require 'parallel'
 
 module Lknovel
   class Volume
 
     attr_reader :url, :series, :author, :title, :number_s, :number, :date,
-      :illustrator, :publisher, :intro, :chapters, :path, :cover_image
+      :illustrator, :publisher, :intro, :chapters, :path
 
-    attr_accessor :cover_image_cropped
+    attr_accessor :cover_image
 
-    def initialize(url, options = {}, &block)
+    def initialize(url)
       @url = url
-      @options = {:threads => 4}.merge(options)
-      parse(&block)
+      parse
     end
 
-    def parse(&block)
+    def parse
       page = retryable do
         Nokogiri::HTML(open(@url))
       end
@@ -51,18 +49,11 @@ module Lknovel
 
       @path = "#{@series} - #{@number_s} - #{@title}"
 
-      @chapters = Parallel.map(
-        page.css('ul.lk-chapter-list li.span3'),
-        :in_threads => @threads) do |x|
+      @chapters = page.css('ul.lk-chapter-list li.span3').map do |x|
         chapter_title = x.text.strip.sub(/\s+/, ' ')
         chapter_url = URI.join(url, x.css('a')[0]['href']).to_s
-        chapter = Chapter.new(chapter_url)
-        block.call(chapter)
-        chapter
+        Chapter.new(chapter_url, title: chapter_title)
       end
-
-      @cover_image = @chapters[0].content.find { |x| x.is_a?(Lknovel::Image) }
-      @cover_image_cropped = @cover_image.file
     end
 
     def html(erb, path = nil)

@@ -5,6 +5,10 @@ require 'lknovel/volume'
 describe Lknovel::Volume do
 
   volume = Lknovel::Volume.new('http://lknovel.lightnovel.cn/main/book/2136.html')
+  volume.parse
+  volume.chapters[0].parse
+  cover_image = volume.chapters[0].content.find { |x| x.is_a?(Lknovel::Image) }
+  volume.cover_image = cover_image
 
   it 'get path' do
     volume.path.must_equal '打工吧！魔王大人 - 短篇01 - 短篇01'

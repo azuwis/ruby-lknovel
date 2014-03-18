@@ -65,17 +65,12 @@ module Lknovel
     end
 
     def process_volume(url)
-      if @options.verbose
-        STDERR.write "Parsing chapters: ..."
-      end
-      volume = Volume.new(url) do |chapter|
-        if @options.verbose
-          STDERR.write "\r#{' ' * @console_width}"
-          STDERR.write "\rParsing chapters: #{chapter.title}"
-        end
-      end
-      if @options.verbose
-        puts
+      volume = Volume.new(url)
+
+      parallel_verbose(volume.chapters, title: 'Chapters',
+                        verbose: @options.verbose) do |chapter|
+        chapter.parse
+        chapter.title
       end
 
       FileUtils.mkdir_p(volume.path)
@@ -85,31 +80,21 @@ module Lknovel
           images = []
           volume.chapters.each do |chapter|
             chapter.content.each do |content|
-              images.push content if content.is_a?(Image)
+              images << content if content.is_a?(Image)
             end
           end
 
-          if @options.verbose
-            progress = 1
-          end
-          STDERR.write "\rDownload images: 0/#{images.length}\t..."
-          Parallel.each(images, :in_threads => 5) do |image|
+          parallel_verbose(images, title: 'Images',
+                            verbose: @options.verbose) do |image|
             image.download
-            if @options.verbose
-              STDERR.write "\r#{' ' * @console_width}"
-              STDERR.write \
-                "\rDownload images: #{progress}/#{images.length}\t#{image.file}"
-              progress = progress + 1
-            end
-          end
-          if @options.verbose
-            puts
+            image.file
           end
 
+          cover_image = volume.chapters[0].content.find { |x| x.is_a?(Image) }
           # crop cover image if width > height * 1.5
-          cropped = volume.cover_image.crop('cover.jpg',
+          cropped = cover_image.crop('cover.jpg',
                       '52%x100%+0+0') { |w, h| w > h * 1.5 }
-          volume.cover_image_cropped = 'cover.jpg' if cropped
+          volume.cover_image = cropped ? 'cover.jpg' : cover_image.file
         end
 
         FileUtils.mkdir_p(HTML_DIR)
@@ -136,7 +121,7 @@ module Lknovel
         contributor volume.illustrator, 'ill'
 
         resources(:workdir => volume.path) {
-          cover_image File.join(IMAGE_DIR, volume.cover_image_cropped)
+          cover_image File.join(IMAGE_DIR, volume.cover_image)
           file \
             "#{STYLESHEET_DIR}/default.css" => "#{STYLESHEET_PATH}/default.css"
           glob "#{IMAGE_DIR}/*"
