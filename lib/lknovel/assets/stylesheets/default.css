@@ -15,6 +15,10 @@ img {
   margin-right: auto;
 }
 
+ul li {
+  padding-top: 15px;
+}
+
 .page-break {
   page-break-after: always;
 }
