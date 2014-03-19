@@ -97,7 +97,7 @@ module Lknovel
             image.file
           end
 
-          cover_image = volume.chapters[0].content.find { |x| x.is_a?(Image) }
+          cover_image = images[0]
           # crop cover image if width > height * 1.4
           cropped = cover_image.crop('cover.jpg',
                       '52%x100%+0+0') { |w, h| w > h * 1.4 }
