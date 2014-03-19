@@ -70,17 +70,6 @@ module Lknovel
 
       FileUtils.mkdir_p(volume.path)
       Dir.chdir(volume.path) do
-        # generate html
-        FileUtils.mkdir_p(HTML_DIR)
-        Dir.chdir(HTML_DIR) do
-          volume.render(File.join(TEMPLATE_PATH, 'front.html.erb'), 'front.html')
-          erb = File.read(File.join(TEMPLATE_PATH, 'chapter.html.erb'))
-          template = ERB.new(erb, nil, '-')
-          volume.chapters.each_with_index do |chapter, index|
-            chapter.render(template, HTML_FILE_FORMAT % index)
-          end
-        end
-
         # download images
         FileUtils.mkdir_p(IMAGE_DIR)
         Dir.chdir(IMAGE_DIR) do
@@ -103,6 +92,17 @@ module Lknovel
             cropped = cover_image.crop('cover.jpg',
                                        '52%x100%+0+0') { |w, h| w > h * 1.4 }
             volume.cover_image = cropped ? 'cover.jpg' : cover_image.file
+          end
+        end
+
+        # generate html
+        FileUtils.mkdir_p(HTML_DIR)
+        Dir.chdir(HTML_DIR) do
+          volume.render(File.join(TEMPLATE_PATH, 'front.html.erb'), 'front.html')
+          erb = File.read(File.join(TEMPLATE_PATH, 'chapter.html.erb'))
+          template = ERB.new(erb, nil, '-')
+          volume.chapters.each_with_index do |chapter, index|
+            chapter.render(template, HTML_FILE_FORMAT % index)
           end
         end
       end
