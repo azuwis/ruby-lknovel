@@ -51,11 +51,6 @@ module Lknovel
 
     def initialize(args)
       @options = self.class.parse(args)
-      begin
-        @console_width = `tput cols`.to_i
-      rescue Exception
-        @console_width = 80
-      end
     end
 
     def run
