@@ -5,7 +5,9 @@
     <link href="<%= "../#{Lknovel::STYLESHEET_DIR}/default.css" %>" rel="stylesheet" type="text/css"/>
   </head>
   <body>
+<% if @cover_image -%>
     <img class="page-break" src="<%= "../#{Lknovel::IMAGE_DIR}/#{@cover_image}" %>">
+<% end -%>
     <h1>简介</h1>
     <p><%= @intro %></p>
     <nav epub:type="toc" id="toc">
