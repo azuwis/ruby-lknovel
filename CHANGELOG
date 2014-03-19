@@ -1,3 +1,4 @@
 0.0.1: Initial release.
 0.0.2: Move block all out of Chapter/Volume class, use more helper function and
        mixin to generalize code.
+0.0.3: Cover image hot fix, update list css
