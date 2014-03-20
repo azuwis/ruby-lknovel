@@ -40,7 +40,8 @@ module Lknovel
       need_crop = yield(width, height) if block_given?
       cropped = false
       if need_crop
-        if system('convert', input, '-crop', operation, output)
+        success = system('convert', input, '-crop', operation, output)
+        if success and File.exists?(output)
           cropped = true
         end
       end
