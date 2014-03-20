@@ -4,3 +4,4 @@
 0.0.3: Cover image hot fix, update list css
 0.0.4: Remove unnecessary require, check if cover image exist in template and
        crop
+0.0.5: Fix lots of errors detected by epubcheck
