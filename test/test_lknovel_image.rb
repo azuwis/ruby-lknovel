@@ -13,12 +13,9 @@ describe Lknovel::Image do
     image.file.must_equal '20120808202600_62961.jpg'
   end
 
-  it 'download' do
+  it 'download and crop' do
     image.download(TMP)
     File.exists?(File.join(TMP, image.file)).must_equal true
-  end
-
-  it 'crop' do
     cover_image = File.join(TMP, 'cover.jpg')
     cropped = image.crop(cover_image, '52%x100%+0+0', :dir => TMP) { |w, h| w > h * 1.5 }
     cropped.must_equal true
