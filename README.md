@@ -1,5 +1,6 @@
 # Lknovel
 [![Build Status](https://travis-ci.org/azuwis/ruby-lknovel.png)](https://travis-ci.org/azuwis/ruby-lknovel)
+[![Coverage Status](https://coveralls.io/repos/azuwis/ruby-lknovel/badge.png)](https://coveralls.io/r/azuwis/ruby-lknovel)
 [![Dependency Status](https://gemnasium.com/azuwis/ruby-lknovel.svg)](https://gemnasium.com/azuwis/ruby-lknovel)
 [![Gem Version](https://badge.fury.io/rb/lknovel.png)](http://badge.fury.io/rb/lknovel)
 
