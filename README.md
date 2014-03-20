@@ -1,4 +1,5 @@
 # Lknovel
+[![Build Status](https://travis-ci.org/azuwis/ruby-lknovel.png)](https://travis-ci.org/azuwis/ruby-lknovel)
 
 Generate epub from http://lknovel.lightnovel.cn/
 
