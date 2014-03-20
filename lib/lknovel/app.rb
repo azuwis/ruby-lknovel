@@ -119,10 +119,12 @@ module Lknovel
         contributor volume.illustrator, 'ill'
 
         resources(:workdir => volume.path) {
-          cover_image File.join(IMAGE_DIR, volume.cover_image)
+          cover_image = File.join(IMAGE_DIR, volume.cover_image)
+          cover_image cover_image
           file \
             "#{STYLESHEET_DIR}/default.css" => "#{STYLESHEET_PATH}/default.css"
-          glob "#{IMAGE_DIR}/*"
+          images = Dir.glob("#{IMAGE_DIR}/*").select {|x| x != cover_image}
+          files *images
           ordered {
             nav "#{HTML_DIR}/front.html"
             volume.chapters.each_with_index do |chapter, index|
