@@ -4,7 +4,6 @@ require 'gepub'
 require 'lknovel/volume'
 require 'optparse'
 require 'ostruct'
-require 'pry'
 
 module Lknovel
   class App
