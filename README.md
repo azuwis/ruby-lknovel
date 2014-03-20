@@ -1,5 +1,6 @@
 # Lknovel
 [![Build Status](https://travis-ci.org/azuwis/ruby-lknovel.png)](https://travis-ci.org/azuwis/ruby-lknovel)
+[![Dependency Status](https://gemnasium.com/azuwis/ruby-lknovel.svg)](https://gemnasium.com/azuwis/ruby-lknovel)
 [![Gem Version](https://badge.fury.io/rb/lknovel.png)](http://badge.fury.io/rb/lknovel)
 
 Generate epub from http://lknovel.lightnovel.cn/
