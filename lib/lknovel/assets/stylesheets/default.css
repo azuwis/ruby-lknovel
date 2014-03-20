@@ -17,6 +17,7 @@ img {
 
 ol li {
   padding-top: 15px;
+  list-style-type: none;
 }
 
 .page-break {
