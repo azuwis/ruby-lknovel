@@ -14,9 +14,10 @@ module Lknovel
 
     attr_accessor :cover_image
 
-    def initialize(url)
+    def initialize(url, options = {})
+      options = {:title => nil}.merge(options)
       @url = url
-      parse
+      @title = options[:title]
     end
 
     def parse

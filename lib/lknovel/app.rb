@@ -72,6 +72,7 @@ module Lknovel
 
     def process_volume(url)
       volume = Volume.new(url)
+      volume.parse
 
       parallel_verbose(volume.chapters,
                        title: 'Chapters',
