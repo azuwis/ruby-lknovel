@@ -156,8 +156,12 @@ module Lknovel
         contributor volume.illustrator, 'ill'
 
         resources(:workdir => volume.path) {
-          cover_image = File.join(IMAGE_DIR, volume.cover_image)
-          cover_image cover_image
+          if volume.cover_image
+            cover_image = File.join(IMAGE_DIR, volume.cover_image)
+            cover_image cover_image
+          else
+            cover_image = nil
+          end
           file \
             "#{STYLESHEET_DIR}/default.css" => "#{STYLESHEET_PATH}/default.css"
           images = Dir.glob("#{IMAGE_DIR}/*").select {|x| x != cover_image}
