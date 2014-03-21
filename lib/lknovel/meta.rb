@@ -1,5 +1,5 @@
 module Lknovel
-  VERSION = "0.0.5"
+  VERSION = "0.0.6"
   MODULE_PATH = File.expand_path('..', __FILE__)
   TEMPLATE_PATH = File.join(MODULE_PATH, 'templates')
   STYLESHEET_PATH = File.join(MODULE_PATH, 'assets', 'stylesheets')

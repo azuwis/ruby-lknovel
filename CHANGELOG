@@ -5,3 +5,5 @@
 0.0.4: Remove unnecessary require, check if cover image exist in template and
        crop
 0.0.5: Fix lots of errors detected by epubcheck
+0.0.6: Add --chapter-theads/--image-theads cli options, support download a
+       whole series
