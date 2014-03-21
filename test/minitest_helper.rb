@@ -1,10 +1,11 @@
-begin
+CI = !!ENV['TRAVIS']
+
+if CI
   require 'coveralls'
   Coveralls.wear!
-rescue LoadError
 end
 
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
 require 'minitest/autorun'
-require 'pry-rescue/minitest'
+require 'pry-rescue/minitest' unless CI
