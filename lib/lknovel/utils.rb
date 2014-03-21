@@ -33,7 +33,8 @@ def parallel_verbose(items, options = {}, &block)
     msg = "\r#{opts[:title]}: 0/#{items.size} ..."
     STDERR.write msg
   end
-  Parallel.each_with_index(items, :in_threads => 5) do |item, index|
+  Parallel.each_with_index(items,
+                           :in_threads => opts[:threads]) do |item, index|
     extra_msg = block.call(item, index)
     if opts[:verbose]
       # get previous console output length, aware of wide chars
