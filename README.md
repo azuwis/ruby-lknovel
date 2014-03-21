@@ -37,10 +37,16 @@ manually using the package manager. For Debian/Ubuntu:
 ## Usage
 
     $ lknovel -h
-    Usage: lknovel [options] url
+    Usage: lknovel [options] URL ...
+
+    URL can be:
+        http://lknovel.lightnovel.cn/main/vollist/?.html
+        http://lknovel.lightnovel.cn/main/book/?.html
 
     Specific options:
         -k, --[no-]keep                  Keep temporary files
+        -t, --chapter-theads THREADS     Chapter download threads(4)
+        -T, --image-theads THREADS       Image download threads(5)
         -q, --[no-]quiet                 Run quietly
 
     Common options:

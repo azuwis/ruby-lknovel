@@ -1,6 +1,7 @@
 require 'erb'
 require 'fileutils'
 require 'gepub'
+require 'lknovel/series'
 require 'lknovel/volume'
 require 'optparse'
 require 'ostruct'
@@ -16,7 +17,10 @@ module Lknovel
       options.keep = false
 
       opt_parser = OptionParser.new do |opts|
-        opts.banner = 'Usage: lknovel [options] url'
+        opts.banner = "Usage: lknovel [options] URL ...\n\n"
+        opts.banner << "URL can be:\n"
+        opts.banner << "    http://lknovel.lightnovel.cn/main/vollist/?.html\n"
+        opts.banner << "    http://lknovel.lightnovel.cn/main/book/?.html\n"
         opts.separator "\nSpecific options:"
 
         opts.on('-k', '--[no-]keep', 'Keep temporary files') do |k|
@@ -66,13 +70,29 @@ module Lknovel
 
     def run
       ARGV.each do |url|
-        process_volume(url)
+        if url.start_with?('http://lknovel.lightnovel.cn/main/book/')
+          volume = Volume.new(url)
+          process_volume(volume)
+        elsif url.start_with?('http://lknovel.lightnovel.cn/main/vollist/')
+          series = Series.new(url)
+          series.parse
+          series.volumes.each do |volume|
+            process_volume(volume)
+          end
+        else
+          puts "Unsupported url: #{url}"
+        end
       end
     end
 
-    def process_volume(url)
-      volume = Volume.new(url)
+    def process_volume(volume)
       volume.parse
+      if File.exists?("#{volume.path}.epub")
+        puts "Skip: #{volume.path}.epub"
+        puts
+        return
+      end
+      puts "Start: #{volume.title}"
 
       parallel_verbose(volume.chapters,
                        title: 'Chapters',
@@ -155,6 +175,7 @@ module Lknovel
       builder.generate_epub("#{volume.path}.epub")
       FileUtils.rm_r volume.path unless @options.keep
       puts "Finish: #{volume.path}.epub"
+      puts
 
     end
 
