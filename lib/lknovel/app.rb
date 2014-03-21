@@ -24,12 +24,12 @@ module Lknovel
         end
 
         opts.on('-t', '--chapter-theads THREADS', Integer,
-                'Number of threads for chapter downloading') do |ct|
+                "Chapter download threads(#{options.chapter_theads})") do |ct|
           options.chapter_theads = ct
         end
 
         opts.on('-T', '--image-theads THREADS', Integer,
-                'Number of threads for image downloading') do |it|
+                "Image download threads(#{options.image_theads})") do |it|
           options.image_theads = it
         end
 
