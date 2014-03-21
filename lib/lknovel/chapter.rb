@@ -14,9 +14,9 @@ module Lknovel
     attr_reader :url, :title, :content
 
     def initialize(url, options = {})
-      @options = {:title => nil}.merge(options)
+      options = {:title => nil}.merge(options)
       @url = url
-      @title = @options[:title]
+      @title = options[:title]
     end
 
     def parse
