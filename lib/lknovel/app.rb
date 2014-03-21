@@ -11,6 +11,8 @@ module Lknovel
     def self.parse(args)
       options = OpenStruct.new
       options.verbose = true
+      options.chapter_theads = 4
+      options.image_theads = 5
       options.keep = false
 
       opt_parser = OptionParser.new do |opts|
@@ -19,6 +21,16 @@ module Lknovel
 
         opts.on('-k', '--[no-]keep', 'Keep temporary files') do |k|
           options.keep = k
+        end
+
+        opts.on('-t', '--chapter-theads THREADS', Integer,
+                'Number of threads for chapter downloading') do |ct|
+          options.chapter_theads = ct
+        end
+
+        opts.on('-T', '--image-theads THREADS', Integer,
+                'Number of threads for image downloading') do |it|
+          options.image_theads = it
         end
 
         opts.on('-q', '--[no-]quiet', 'Run quietly') do |q|
@@ -61,8 +73,10 @@ module Lknovel
     def process_volume(url)
       volume = Volume.new(url)
 
-      parallel_verbose(volume.chapters, title: 'Chapters',
-                        verbose: @options.verbose) do |chapter|
+      parallel_verbose(volume.chapters,
+                       title: 'Chapters',
+                       threads: @options.chapter_theads,
+                       verbose: @options.verbose) do |chapter|
         chapter.parse
         chapter.title
       end
@@ -79,8 +93,10 @@ module Lknovel
             end
           end
 
-          parallel_verbose(images, title: 'Images',
-                            verbose: @options.verbose) do |image|
+          parallel_verbose(images,
+                           title: 'Images',
+                           threads: @options.image_theads,
+                           verbose: @options.verbose) do |image|
             image.download
             image.file
           end
