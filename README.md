@@ -60,7 +60,7 @@ manually using the package manager. For Debian/Ubuntu:
 
 ## Contributing
 
-1. Fork it ( http://github.com/azuwis/lknovel/fork )
+1. Fork it ( http://github.com/azuwis/ruby-lknovel/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
