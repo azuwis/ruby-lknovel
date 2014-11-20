@@ -7,3 +7,4 @@
 0.0.5: Fix lots of errors detected by epubcheck
 0.0.6: Add --chapter-theads/--image-theads cli options, support download a
        whole series
+0.0.7: Use IE 10 user agent to open uri, fix parsing and downloading
