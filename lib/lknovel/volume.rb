@@ -3,7 +3,6 @@ require 'lknovel/chapter'
 require 'lknovel/meta'
 require 'lknovel/utils'
 require 'nokogiri'
-require 'open-uri'
 
 module Lknovel
   class Volume
@@ -22,9 +21,8 @@ module Lknovel
 
     def parse
       page = retryable do
-        Nokogiri::HTML(open(@url))
+        Nokogiri::HTML(openuri(@url))
       end
-
       page_title = page.title.split(' - ')
       @series = page_title[0]
       @number_s = page_title[1]

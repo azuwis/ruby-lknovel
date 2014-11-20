@@ -1,5 +1,6 @@
 # encoding: utf-8
 require 'parallel'
+require 'open-uri'
 
 # http://blog.codefront.net/2008/01/14/retrying-code-blocks-in-ruby-on-exceptions-whatever/
 # Options:
@@ -24,6 +25,10 @@ def retryable(options = {}, &block)
   end
 
   yield
+end
+
+def openuri(name, *rest, &block)
+  open(name, *rest, {'User-Agent' => 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)'}, &block)
 end
 
 def parallel_verbose(items, options = {}, &block)

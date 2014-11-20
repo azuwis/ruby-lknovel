@@ -1,5 +1,4 @@
 require 'lknovel/utils'
-require 'open-uri'
 require 'uri'
 
 module Lknovel
@@ -17,7 +16,7 @@ module Lknovel
       if !File.exists?(file)
         File.open(file, 'wb') do |w|
           retryable do
-            open(@uri, 'rb') do |r|
+            openuri(@uri, 'rb') do |r|
               w.write(r.read)
             end
           end

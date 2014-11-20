@@ -5,7 +5,6 @@ require 'lknovel/image'
 require 'lknovel/meta'
 require 'lknovel/utils'
 require 'nokogiri'
-require 'open-uri'
 
 module Lknovel
   class Chapter
@@ -21,7 +20,7 @@ module Lknovel
 
     def parse
       page = retryable do
-        Nokogiri::HTML(open(@url))
+        Nokogiri::HTML(openuri(@url))
       end
 
       @title = page.css('li.active')[0].text.sub('章', '章 ').strip

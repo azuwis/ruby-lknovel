@@ -2,7 +2,6 @@
 require 'lknovel/utils'
 require 'lknovel/volume'
 require 'nokogiri'
-require 'open-uri'
 
 module Lknovel
   class Series
@@ -14,7 +13,7 @@ module Lknovel
 
     def parse
       page = retryable do
-        Nokogiri::HTML(open(@url))
+        Nokogiri::HTML(openuri(@url))
       end
 
       @volumes = page.css('dl dd h2.ft-24 strong a').map do |x|
