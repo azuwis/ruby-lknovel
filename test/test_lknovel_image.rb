@@ -7,7 +7,7 @@ describe Lknovel::Image do
 
   FileUtils.mkdir_p TMP
 
-  image = Lknovel::Image.new('http://lknovel.lightnovel.cn/illustration/image/20120808/20120808202600_62961.jpg')
+  image = Lknovel::Image.new('http://www.linovel.com/illustration/image/20120808/20120808202600_62961.jpg')
 
   it '@file' do
     image.file.must_equal '20120808202600_62961.jpg'
