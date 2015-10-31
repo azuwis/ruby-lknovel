@@ -1,5 +1,5 @@
 # encoding: utf-8
-require 'minitest_helper'
+require_relative 'minitest_helper'
 require 'lknovel/volume'
 
 describe Lknovel::Volume do

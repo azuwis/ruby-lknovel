@@ -1,4 +1,4 @@
-require 'minitest_helper'
+require_relative 'minitest_helper'
 require 'lknovel/image'
 
 describe Lknovel::Image do
