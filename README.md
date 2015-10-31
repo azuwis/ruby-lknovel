@@ -4,7 +4,7 @@
 [![Dependency Status](https://gemnasium.com/azuwis/ruby-lknovel.svg)](https://gemnasium.com/azuwis/ruby-lknovel)
 [![Gem Version](https://badge.fury.io/rb/lknovel.png)](http://badge.fury.io/rb/lknovel)
 
-Generate epub from http://lknovel.lightnovel.cn/
+Generate epub from http://www.linovel.com/
 
 ## Installation
 
@@ -42,8 +42,8 @@ For Debian/Ubuntu:
     Usage: lknovel [options] URL ...
 
     URL can be:
-        http://lknovel.lightnovel.cn/main/vollist/?.html
-        http://lknovel.lightnovel.cn/main/book/?.html
+        http://www.linovel.com/n/vollist/?.html
+        http://www.linovel.com/n/book/?.html
 
     Specific options:
         -k, --[no-]keep                  Keep temporary files
@@ -55,10 +55,10 @@ For Debian/Ubuntu:
         -h, --help                       Show this message
         -V, --version                    Show version
 
-    $ lknovel http://lknovel.lightnovel.cn/main/book/2123.html
+    $ lknovel http://www.linovel.com/n/book/2123.html
     Chapters: 5/5 第3章 魔王和勇者，在笹塚相会。
     Images: 13/13 20120817193746_95414.jpg
-    Finish: 打工吧！魔王大人 - 第01卷 - 第1卷.epub
+    Finish: 打工吧！魔王大人 - 第01卷 第1卷.epub
 
 ## Contributing
 
