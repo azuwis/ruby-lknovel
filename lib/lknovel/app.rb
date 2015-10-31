@@ -19,8 +19,8 @@ module Lknovel
       opt_parser = OptionParser.new do |opts|
         opts.banner = "Usage: lknovel [options] URL ...\n\n"
         opts.banner << "URL can be:\n"
-        opts.banner << "    http://lknovel.lightnovel.cn/main/vollist/?.html\n"
-        opts.banner << "    http://lknovel.lightnovel.cn/main/book/?.html\n"
+        opts.banner << "    http://www.linovel.com/n/vollist/?.html\n"
+        opts.banner << "    http://www.linovel.com/n/book/?.html\n"
         opts.separator "\nSpecific options:"
 
         opts.on('-k', '--[no-]keep', 'Keep temporary files') do |k|
@@ -70,10 +70,10 @@ module Lknovel
 
     def run
       ARGV.each do |url|
-        if url.start_with?('http://lknovel.lightnovel.cn/main/book/')
+        if url.start_with?('http://www.linovel.com/n/book/')
           volume = Volume.new(url)
           process_volume(volume)
-        elsif url.start_with?('http://lknovel.lightnovel.cn/main/vollist/')
+        elsif url.start_with?('http://www.linovel.com/n/vollist/')
           series = Series.new(url)
           series.parse
           series.volumes.each do |volume|
