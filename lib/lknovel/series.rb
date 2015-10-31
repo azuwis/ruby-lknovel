@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'lknovel/utils'
 require 'lknovel/volume'
 require 'nokogiri'

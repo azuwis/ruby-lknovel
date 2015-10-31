@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'parallel'
 require 'open-uri'
 
