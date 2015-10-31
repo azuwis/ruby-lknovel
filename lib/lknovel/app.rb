@@ -148,7 +148,7 @@ module Lknovel
         language 'zh'
         date Time.parse(volume.date + ' +0800')
 
-        title "#{volume.series} - #{volume.number_s}"
+        title "#{volume.series} - #{volume.title}"
         collection volume.title, volume.number
 
         creator volume.author

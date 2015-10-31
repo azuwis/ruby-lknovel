@@ -8,7 +8,7 @@ module Lknovel
   class Volume
     include ERBRender
 
-    attr_reader :url, :series, :author, :title, :number_s, :number, :date,
+    attr_reader :url, :series, :author, :title, :number, :date,
       :illustrator, :publisher, :intro, :chapters, :path
 
     attr_accessor :cover_image
@@ -23,35 +23,33 @@ module Lknovel
       page = retryable do
         Nokogiri::HTML(openuri(@url))
       end
-      page_title = page.title.split(' - ')
-      @series = page_title[0]
-      @number_s = page_title[1]
-      if /第(?<number>[.\d]+)卷/ =~ page_title[1]
+
+      @series = page.css('div.linovel-info h1').text
+      @intro = page.css('p.linovel-info-desc').text
+
+      @title = page.css('ul.linovel-book-list h3').text
+      if /第(?<number>[.\d]+)卷/ =~ @title
         @number = number.to_f
       end
 
-      @intro = page.css('strong:contains("内容简介") + p').text
-
-      page.css('table.lk-book-detail td').each_slice(2) do |x|
-        case x[0].text
-        when /标 *题/
-          @title = x[1].text.strip
-        when /作 *者/
-          @author = x[1].text.strip
-        when /插 *画/
-          @illustrator = x[1].text.strip
-        when /文 *库/
-          @publisher = x[1].text.strip
-        when /更 *新/
-          @date = x[1].text.strip
+      page.css('div.linovel-info label').each do |x|
+        case x.text.strip
+        when '作者：'
+          @author = x.next.text.strip
+        when '插画：'
+          @illustrator = x.next.text.strip
+        when '文库：'
+          @publisher = x.next.text.strip
+        when '最新更新：'
+          @date = x.next.text.strip
         end
       end
 
-      @path = "#{@series} - #{@number_s} - #{@title}"
+      @path = "#{@series} - #{@title}"
 
-      @chapters = page.css('ul.lk-chapter-list li.span3').map do |x|
-        chapter_title = x.text.strip.sub(/\s+/, ' ')
-        chapter_url = URI.join(url, x.css('a')[0]['href']).to_s
+      @chapters = page.css('div.linovel-chapter-list a').map do |x|
+        chapter_title = x.text.strip
+        chapter_url = URI.join(url, x['href']).to_s
         Chapter.new(chapter_url, title: chapter_title)
       end
     end
