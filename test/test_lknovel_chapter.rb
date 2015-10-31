@@ -4,11 +4,11 @@ require 'lknovel/chapter'
 
 describe Lknovel::Chapter do
 
-  chapter = Lknovel::Chapter.new('http://lknovel.lightnovel.cn/main/view/1486.html')
+  chapter = Lknovel::Chapter.new('http://www.linovel.com/n/view/1486.html')
   chapter.parse
 
   it 'get chapter title' do
-    chapter.title.must_equal '第0章 序章'
+    chapter.title.must_equal '序章'
   end
 
   it 'get chapter text' do

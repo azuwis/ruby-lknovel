@@ -23,19 +23,17 @@ module Lknovel
         Nokogiri::HTML(openuri(@url))
       end
 
-      @title = page.css('li.active')[0].text.sub('章', '章 ').strip
+      js = page.css('script').sort_by { |x| x.text.length }[-1].text
 
-      @content = page.css('div#J_view')
-      .css('div.lk-view-line, br + br')
-      .map do |x|
-        img = x.css('img[data-cover]')
-        if x.name == 'br'
+      @title = js.match(/subTitle:"([^"]+)"/)[1]
+
+      @content = js.scan(/content:"([^"]+)"/).map do |x|
+        if x[0] == '<br>'
           ''
-        elsif img.length > 0
-          Image.new(URI.join(url, img[0]['data-cover']))
+        elsif x[0].start_with?('[img]')
+          Image.new(URI.join(url, x[0][5..-7]))
         else
-          # strip and remove leading wide space
-          x.text.strip.sub(/^　+/, '')
+          x[0].strip.sub(/^　+/, '')
         end
       end
     end
