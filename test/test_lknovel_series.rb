@@ -4,12 +4,11 @@ require 'lknovel/series'
 
 describe Lknovel::Series do
 
-  series = Lknovel::Series.new('http://lknovel.lightnovel.cn/main/vollist/615.html')
+  series = Lknovel::Series.new('http://linovel.com/n/vollist/615.html')
   series.parse
 
-  it 'volume[1]' do
-    volume = series.volumes[1]
-    volume.url.must_equal 'http://lknovel.lightnovel.cn/main/book/2123.html'
+  it 'series' do
+    series.volumes.find { |x| x.url == 'http://linovel.com/n/book/2123.html' }.title.must_equal '第01卷 第1卷'
   end
 
 end

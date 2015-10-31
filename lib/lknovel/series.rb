@@ -16,9 +16,9 @@ module Lknovel
         Nokogiri::HTML(openuri(@url))
       end
 
-      @volumes = page.css('dl dd h2.ft-24 strong a').map do |x|
-        volume_title = x.text.split("\r\n")[-1].strip
-        volume_url = x['href']
+      @volumes = page.css('li.linovel-book-item h3 a').map do |x|
+        volume_title = x.text.strip
+        volume_url = URI.join(@url, x['href']).to_s
         Volume.new(volume_url, title: volume_title)
       end
     end
