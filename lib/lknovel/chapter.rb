@@ -27,13 +27,16 @@ module Lknovel
 
       @title = js.match(/subTitle:"([^"]+)"/)[1]
 
-      @content = js.scan(/content:"([^"]+)"/).map do |x|
+      @content = []
+      js.scan(/content:"([^"]+)"/).map do |x|
         if x[0] == '<br>'
-          ''
-        elsif x[0].start_with?('[img]')
-          Image.new(URI.join(url, x[0][5..-7]))
+          @content << ''
+        elsif x[0].match(/(.*)\[img\](\S+)\[\/img\](.*)/)
+          @content << $~[1] if $~[1]
+          @content << Image.new(URI.join(url, $~[2]))
+          @content << $~[3] if $~[3]
         else
-          x[0].strip.sub(/^　+/, '')
+          @content << x[0].strip.sub(/^　+/, '')
         end
       end
     end
